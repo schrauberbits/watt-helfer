@@ -92,10 +92,16 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const h=(html)=>{app.innerHTML=html;window.scrollTo(0,0)};
 const dauer=std=>{const m=Math.round(std*60);if(m<60)return m+' Minuten';const hh=Math.floor(m/60),mm=m%60;return hh+(hh===1?' Stunde':' Stunden')+(mm?' '+mm+' Minuten':'')};
 
-// Nutzung zählen: einmal je Frage und Besuch, sobald eine Antwort angezeigt wird
-const gezaehlt={};
-function zaehle(name){ if(gezaehlt[name]) return; gezaehlt[name]=1;
-  try{ if(window.goatcounter&&window.goatcounter.count) window.goatcounter.count({path:'antwort-'+name,title:'Antwort: '+name,event:true}); }catch(e){} }
+// Nutzung zählen: "aufruf-…" = welche Frage geöffnet wurde (auch über Links),
+// "antwort-…" = jemand hat selbst etwas angetippt oder eingegeben (einmal je Frage und Besuch)
+const gezaehlt={}; let interagiert=false;
+app.addEventListener('click',()=>{interagiert=true},true); app.addEventListener('input',()=>{interagiert=true},true);
+function senden(path,title,versuch){
+  try{ if(window.goatcounter&&window.goatcounter.count){ window.goatcounter.count({path,title,event:true}); return; } }catch(e){ return; }
+  if(versuch<40) setTimeout(()=>senden(path,title,versuch+1),250); // Zählskript lädt nach; ist es blockiert, wird nichts gezählt
+}
+function zaehle(name,art){ art=art||'antwort'; if(art==='antwort'&&!interagiert&&name!=='kopiert') return;
+  const key=art+'-'+name; if(gezaehlt[key]) return; gezaehlt[key]=1; senden(key,(art==='aufruf'?'Aufruf: ':'Antwort: ')+name,0); }
 
 async function kopieren(text,el){
   try{await navigator.clipboard.writeText(text);el.textContent='Kopiert ✓';}catch(e){el.textContent='Bitte Text markieren und kopieren.';}
@@ -344,6 +350,7 @@ const SEITEN={kosten,steckdose,netzteil,akku,umrechnen};
 function route(){
   const t=location.hash.slice(1);
   document.getElementById('back').classList.toggle('hide',!SEITEN[t]);
+  zaehle(SEITEN[t]?t:'start','aufruf');
   (SEITEN[t]||start)();
 }
 document.getElementById('home').onclick=()=>{location.hash='';};
