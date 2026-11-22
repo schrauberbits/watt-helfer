@@ -242,15 +242,17 @@ function netzteil(){
   setW(); nupd();
 }
 const GROESSEN=[450,550,650,750,850,1000,1200,1300,1500,1600];
+// Netzteil-Empfehlung der Grafikkarten-Hersteller (Gesamtsystem), nur wo bekannt
+const HERSTELLER={'RTX 3060':550,'RTX 3070':650,'RTX 3080':750,'RTX 4060':550,'RTX 4060 Ti':550,'RTX 4070':650,'RTX 4070 Super':650,'RTX 4070 Ti (Super)':700,'RTX 4080 (Super)':750,'RTX 4090':850,'RTX 5070':650,'RTX 5070 Ti':750,'RTX 5080':850,'RTX 5090':1000};
 function nupd(){
   const gpu=num(ngw.value),cpu=num(ncw.value),rest=num(nr.value),psu=N.psu;
-  const last=gpu+cpu+rest, empf=last*1.3, gr=GROESSEN.find(g=>g>=empf)||Math.ceil(empf/100)*100;
+  const gname=GPUS[N.gpu][0], cname=CPUS[N.cpu][0], hst=HERSTELLER[gname]||0;
+  const last=gpu+cpu+rest, empf=last*1.3, gr0=GROESSEN.find(g=>g>=empf)||Math.ceil(empf/100)*100, gr=Math.max(gr0,hst), soll=Math.max(empf,hst);
   let cls='',say=`Du brauchst ein Netzteil mit etwa ${fmt(gr)} W.`;
-  if(psu>0){ if(psu>=empf){cls='ok';say=`Ja, dein ${fmt(psu)}-W-Netzteil reicht.`;} else if(psu>=last*1.1){cls='warn';say=`Knapp – ${fmt(psu)} W reichen gerade so.`;} else {cls='bad';say=`Nein, ${fmt(psu)} W sind zu wenig.`;} }
-  const gname=GPUS[N.gpu][0], cname=CPUS[N.cpu][0];
-  const more=`Unter Volllast zieht der PC etwa <b>${fmt(last)} W</b> (Grafikkarte ${fmt(gpu)} W + Prozessor ${fmt(cpu)} W + Rest ${fmt(rest)} W). Mit 30 % Reserve für Lastspitzen: ${fmt(empf)} W → empfohlen <b>${fmt(gr)} W</b>.`;
+  if(psu>0){ if(psu>=soll){cls='ok';say=`Ja, dein ${fmt(psu)}-W-Netzteil reicht.`;} else if(psu>=last*1.1){cls='warn';say=`Knapp – ${fmt(psu)} W reichen gerade so.`;} else {cls='bad';say=`Nein, ${fmt(psu)} W sind zu wenig.`;} }
+  const more=`Unter Volllast zieht der PC etwa <b>${fmt(last)} W</b> (Grafikkarte ${fmt(gpu)} W + Prozessor ${fmt(cpu)} W + Rest ${fmt(rest)} W). Mit 30 % Reserve für Lastspitzen: ${fmt(empf)} W${hst?`, der Grafikkarten-Hersteller empfiehlt für die ${esc(gname)} mindestens <b>${fmt(hst)} W</b>`:''} → empfohlen <b>${fmt(gr)} W</b>.`;
   const tips=['Qualität vor Wattzahl: ein gutes Markennetzteil (80 Plus Gold) ist besser als ein billiges mit mehr Watt.','Prüfe, ob das Netzteil die Stromstecker deiner Grafikkarte hat (8-Pin bzw. 12V-2x6).'];
-  const copy=`Netzteil-Check: ${gname} (${fmt(gpu)} W) + ${cname} (${fmt(cpu)} W) + Rest ${fmt(rest)} W = ca. ${fmt(last)} W unter Volllast. Mit 30 % Reserve: ${fmt(empf)} W → empfohlen ${fmt(gr)} W.${psu>0?' Vorhanden: '+fmt(psu)+' W – '+say:''}`;
+  const copy=`Netzteil-Check: ${gname} (${fmt(gpu)} W) + ${cname} (${fmt(cpu)} W) + Rest ${fmt(rest)} W = ca. ${fmt(last)} W unter Volllast. Mit 30 % Reserve: ${fmt(empf)} W${hst?`, Herstellerempfehlung für die Grafikkarte ${fmt(hst)} W`:''} → empfohlen ${fmt(gr)} W.${psu>0?' Vorhanden: '+fmt(psu)+' W – '+say:''}`;
   nres.innerHTML=antwortBox(cls,'Antwort',say,more,tips,copy,'');
   zaehle('netzteil');
 }
