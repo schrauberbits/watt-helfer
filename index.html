@@ -1,0 +1,354 @@
+<p>test</p>
+  <b>x</b><!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Watt-Helfer – Strom einfach nachrechnen</title>
+<meta name="description" content="Antworten auf typische Stromfragen in wenigen Klicks: Was kostet mein Gerät? Ist die Steckdose überlastet? Reicht mein PC-Netzteil? Wie lange lädt mein Akku? Kostenlos, ohne Anmeldung.">
+<style>
+:root{--bg:#f4f5f2;--card:#fff;--ink:#1b1c1a;--muted:#62645e;--line:#e0e2dc;--soft:#eef0eb;
+--accent:#1d6b58;--accent-ink:#fff;--accent-soft:#e1efe9;--ok:#2b7a30;--ok-soft:#e4f2e5;--warn:#9a5a00;--warn-soft:#fbefd9;--bad:#b0261f;--bad-soft:#fbe4e1}
+@media (prefers-color-scheme:dark){:root{--bg:#131412;--card:#1e1f1c;--ink:#ecede8;--muted:#a2a49d;--line:#343632;--soft:#282a26;
+--accent:#6fc6ac;--accent-ink:#0f2a22;--accent-soft:#1c3830;--ok:#7cc480;--ok-soft:#1e331f;--warn:#e8b15d;--warn-soft:#382c17;--bad:#ef8a80;--bad-soft:#3b1e1b}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:560px;margin:0 auto;padding:18px 16px 60px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+.brand{font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:6px;cursor:pointer;background:none;border:0;color:var(--ink);font-family:inherit;padding:0}
+.brand svg{width:22px;height:22px;color:var(--accent)}
+.back{background:none;border:0;color:var(--accent);font:inherit;font-weight:600;cursor:pointer;padding:6px 0}
+h1{font-size:1.6rem;line-height:1.2;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 20px}
+.step{font-size:.85rem;color:var(--muted);margin-bottom:4px}
+h2{font-size:1.35rem;line-height:1.25;margin:0 0 14px}
+.qlist{display:flex;flex-direction:column;gap:10px}
+.q{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;font:inherit;color:inherit;cursor:pointer}
+.q:active,.card:active,.pill:active{transform:scale(.98)}
+.q .ic{flex:0 0 46px;height:46px;border-radius:12px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center}
+.q .ic svg{width:26px;height:26px}
+.q b{display:block;font-size:1.05rem}
+.q span{display:block;color:var(--muted);font-size:.88rem}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (max-width:380px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.card{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:96px;padding:12px 6px;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:14px;font:inherit;font-size:.9rem;line-height:1.2;color:inherit;cursor:pointer}
+.card .e{font-size:1.9rem;line-height:1}
+.card small{color:var(--muted);font-size:.75rem}
+.card.on{border:2px solid var(--accent);background:var(--accent-soft)}
+.badge{position:absolute;top:6px;right:6px;min-width:24px;height:24px;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-size:.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:10px 16px;font:inherit;font-size:.95rem;cursor:pointer;min-height:46px}
+.pill.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.slider{margin:6px 0 4px}
+input[type=range]{width:100%;accent-color:var(--accent);height:32px}
+.sl-val{text-align:center;font-size:1.5rem;font-weight:700;margin:2px 0}
+.sl-ends{display:flex;justify-content:space-between;color:var(--muted);font-size:.8rem}
+.answer{margin-top:18px;border-radius:18px;padding:18px;background:var(--accent-soft)}
+.answer.ok{background:var(--ok-soft)}.answer.warn{background:var(--warn-soft)}.answer.bad{background:var(--bad-soft)}
+.answer .lbl{font-size:.8rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.answer .say{font-size:1.3rem;font-weight:700;line-height:1.3;margin:6px 0 8px}
+.answer .more{color:var(--ink);font-size:.95rem}
+.answer.ok .say{color:var(--ok)}.answer.warn .say{color:var(--warn)}.answer.bad .say{color:var(--bad)}
+.tips{margin:10px 0 0;padding-left:20px;font-size:.92rem}
+.tips li{margin:4px 0}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.btn{border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:12px;padding:11px 16px;font:inherit;font-weight:600;cursor:pointer;min-height:46px}
+.btn.ghost{background:transparent;color:var(--accent)}
+.msg{font-size:.88rem;color:var(--ok);align-self:center}
+details.fine{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+details.fine summary{cursor:pointer;color:var(--accent);font-weight:600;list-style:none}
+details.fine summary::before{content:"⚙ "}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.field span{display:block;font-size:.82rem;color:var(--muted);margin-bottom:4px}
+input[type=number],select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;height:48px;width:100%}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.formula{font-size:.85rem;color:var(--muted);margin-top:10px;line-height:1.45}
+svg.gauge{display:block;width:100%;max-width:280px;margin:0 auto 4px}
+.sum{text-align:center;font-size:2rem;font-weight:800;letter-spacing:-.02em}
+.hint{font-size:.85rem;color:var(--muted);margin:8px 0 0}
+.hide{display:none!important}
+footer{margin-top:28px;font-size:.8rem;color:var(--muted);text-align:center;line-height:1.5}
+.gap{height:18px}
+</style>
+<script data-goatcounter="https://schrauberbits.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <button class="brand" id="home" aria-label="Zur Startseite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Watt-Helfer</button>
+    <button class="back hide" id="back">← Andere Frage</button>
+  </div>
+  <main id="app"></main>
+  <footer>Richtwerte ohne Gewähr. Bei Elektroinstallation und Sicherheitsfragen bitte eine Elektrofachkraft fragen.<br>Kostenlos, ohne Anmeldung, ohne Werbung – ein Hobbyprojekt.</footer>
+</div>
+
+<script>
+// ================= Grundlagen =================
+const app=document.getElementById('app');
+const fmt=(n,d=0)=>Number(n).toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d});
+const eur=n=>Number(n).toLocaleString('de-DE',{style:'currency',currency:'EUR',maximumFractionDigits:n<10?2:0});
+const num=v=>{const n=parseFloat(String(v).replace(',','.'));return isFinite(n)?n:0};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const h=(html)=>{app.innerHTML=html;window.scrollTo(0,0)};
+const dauer=std=>{const m=Math.round(std*60);if(m<60)return m+' Minuten';const hh=Math.floor(m/60),mm=m%60;return hh+(hh===1?' Stunde':' Stunden')+(mm?' '+mm+' Minuten':'')};
+
+// Nutzung zählen: einmal je Frage und Besuch, sobald eine Antwort angezeigt wird
+const gezaehlt={};
+function zaehle(name){ if(gezaehlt[name]) return; gezaehlt[name]=1;
+  try{ if(window.goatcounter&&window.goatcounter.count) window.goatcounter.count({path:'antwort-'+name,title:'Antwort: '+name,event:true}); }catch(e){} }
+
+async function kopieren(text,el){
+  try{await navigator.clipboard.writeText(text);el.textContent='Kopiert ✓';}catch(e){el.textContent='Bitte Text markieren und kopieren.';}
+  zaehle('kopiert'); setTimeout(()=>{el.textContent=''},2500);
+}
+function antwortBox(cls,label,say,more,tips,copyText,formel){
+  return `<div class="answer ${cls}"><div class="lbl">${label}</div><div class="say">${say}</div>${more?`<div class="more">${more}</div>`:''}
+  ${tips&&tips.length?`<ul class="tips">${tips.map(t=>`<li>${t}</li>`).join('')}</ul>`:''}
+  ${formel?`<div class="formula">${formel}</div>`:''}
+  <div class="actions"><button class="btn ghost" data-copy>Antwort kopieren</button><span class="msg" data-msg></span></div>
+  <textarea class="hide" data-text>${esc(copyText)}</textarea></div>`;
+}
+app.addEventListener('click',e=>{const b=e.target.closest('[data-copy]');if(!b)return;const box=b.closest('.answer');kopieren(box.querySelector('[data-text]').value,box.querySelector('[data-msg]'));});
+
+const ICON={
+ kosten:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M15 9a3.5 3.5 0 0 0-6 2v2a3.5 3.5 0 0 0 6 2M7.5 11h5M7.5 13.5h5"/></svg>',
+ steckdose:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="9" cy="12" r="1.2" fill="currentColor"/><circle cx="15" cy="12" r="1.2" fill="currentColor"/></svg>',
+ netzteil:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="3.2"/><path d="M15 9.5h3M15 12h3M15 14.5h3"/></svg>',
+ akku:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="17" height="10" rx="2.2"/><path d="M21.5 10.5v3M11.5 9l-2 3.2h3l-2 3.3"/></svg>',
+ umrechnen:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg>'
+};
+
+// ================= Startseite =================
+const FRAGEN=[
+ ['steckdose','Kann ich das alles an eine Steckdose hängen?','Mehrfachsteckdose, Heizlüfter, Wasserkocher …'],
+ ['kosten','Was kostet mich ein Gerät?','Pro Monat und pro Jahr'],
+ ['netzteil','Reicht mein PC-Netzteil?','Für Grafikkarte und Prozessor'],
+ ['akku','Wie lange lädt mein Akku?','Handy, Powerbank, E-Scooter'],
+ ['umrechnen','Watt, Volt, Ampere umrechnen','Zum Beispiel: Wie viel Ampere sind 2000 W?']
+];
+function start(){
+  h(`<h1>Was möchtest du wissen?</h1><p class="sub">Tippe eine Frage an – die Antwort kommt in wenigen Schritten.</p>
+  <div class="qlist">${FRAGEN.map(f=>`<button class="q" data-go="${f[0]}"><span class="ic">${ICON[f[0]]}</span><span><b>${f[1]}</b><span>${f[2]}</span></span></button>`).join('')}</div>`);
+}
+app.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b) location.hash=b.dataset.go;});
+
+// ================= Geräte =================
+// [Emoji, Name, Watt, Stunden pro Tag] – typische Werte; das Typenschild hat Vorrang
+const GERAETE=[
+ ['🔥','Heizlüfter',2000,3],['🫖','Wasserkocher',2000,0.15],['💨','Föhn',1800,0.2],['🎮','Gaming-PC',350,3],
+ ['🖥️','Monitor',30,6],['💻','Laptop',45,6],['📺','Fernseher',90,4],['🕹️','Spielkonsole',150,2],
+ ['❄️','Klimagerät',1000,4],['🌡️','Ölradiator',1500,4],['🍲','Mikrowelle',1200,0.2],['☕','Kaffeemaschine',1450,0.25],
+ ['🧺','Waschmaschine',2000,1],['🌀','Wäschetrockner',2500,1],['🧊','Kühlschrank',35,24],['📶','WLAN-Router',10,24],
+ ['🧹','Staubsauger',700,0.3],['🛴','E-Scooter laden',100,3],['💡','LED-Lampe',8,5],['🔌','Anderes Gerät',100,2]
+];
+
+// ================= 1) Stromkosten =================
+const K={g:null,watt:0,std:0,preis:35,tage:7};
+function kosten(){
+  h(`<div class="step">Schritt 1 von 2</div><h2>Welches Gerät?</h2>
+  <div class="grid">${GERAETE.map((g,i)=>`<button class="card" data-k="${i}"><span class="e">${g[0]}</span>${g[1]}<small>${fmt(g[2])} W</small></button>`).join('')}</div>`);
+}
+function kosten2(){
+  const g=K.g;
+  h(`<div class="step">Schritt 2 von 2</div><h2>Wie lange läuft ${g[1]==='Anderes Gerät'?'das Gerät':'dein '+esc(g[1])} am Tag?</h2>
+  <div class="slider"><div class="sl-val" id="kv"></div><input type="range" id="ks" min="0" max="96" step="1" value="${Math.round(K.std*4)}" aria-label="Stunden pro Tag"><div class="sl-ends"><span>gar nicht</span><span>24 Std.</span></div></div>
+  <div id="kres"></div>
+  <details class="fine"${g[1]==='Anderes Gerät'?' open':''}><summary>Genauer einstellen</summary><div class="fields">
+   <label class="field"><span>Leistung in Watt (Typenschild)</span><input type="number" id="kw" inputmode="decimal" min="0" value="${K.watt}"></label>
+   <label class="field"><span>Strompreis in Cent/kWh</span><input type="number" id="kp" inputmode="decimal" min="0" step="0.1" value="${K.preis}"></label>
+   <label class="field"><span>Tage pro Woche</span><input type="number" id="kt" inputmode="numeric" min="1" max="7" value="${K.tage}"></label>
+  </div><p class="hint">Der Strompreis steht auf deiner Stromrechnung. 35 Cent sind ein grober Durchschnitt.</p></details>`);
+  const upd=()=>{K.std=num(ks.value)/4;K.watt=num(kw.value);K.preis=num(kp.value);K.tage=Math.min(7,Math.max(1,num(kt.value)||7));
+    kv.textContent=K.std===0?'0 Std.':dauer(K.std).replace(' Stunden',' Std.').replace(' Stunde',' Std.');
+    const kwhJ=K.watt*K.std/1000*K.tage*52.18, j=kwhJ*K.preis/100, m=j/12, name=g[1]==='Anderes Gerät'?'Das Gerät':'Dein '+g[1];
+    const say=`${esc(name)} kostet dich etwa ${eur(m)} im Monat.`;
+    const more=`Das sind rund <b>${eur(j)}</b> im Jahr bei ${fmt(K.watt)} W, ${kv.textContent} am Tag und ${fmt(K.preis,1)} ct/kWh (${fmt(kwhJ)} kWh pro Jahr).`;
+    const tips=[]; if(K.watt>=1000&&K.std>=2) tips.push('Große Wärmegeräte sind die teuersten Verbraucher im Haushalt – schon eine Stunde weniger pro Tag spart spürbar.');
+    if(g[1]==='Gaming-PC') tips.push('Im Leerlauf oder beim Surfen braucht ein Gaming-PC oft nur 60–100 W; 350 W gelten beim Spielen.');
+    const copy=`${name} (${fmt(K.watt)} W) ${kv.textContent} am Tag bei ${fmt(K.preis,1)} ct/kWh: ca. ${eur(m)} im Monat, ${eur(j)} im Jahr (${fmt(kwhJ)} kWh).`;
+    kres.innerHTML=antwortBox('','Antwort',say,more,tips,copy,`Rechnung: ${fmt(K.watt)} W × ${fmt(K.std,2)} h ÷ 1000 = ${fmt(K.watt*K.std/1000,2)} kWh pro Tag × Preis.`);
+    zaehle('kosten');};
+  ['ks','kw','kp','kt'].forEach(id=>document.getElementById(id).addEventListener('input',upd)); upd();
+}
+app.addEventListener('click',e=>{const c=e.target.closest('[data-k]');if(!c)return;const g=GERAETE[c.dataset.k];K.g=g;K.watt=g[2];K.std=g[3];kosten2();});
+
+// ================= 2) Steckdose =================
+const S={anz:{},extra:0,grenze:3680};
+const GRENZEN=[[3680,'Wandsteckdose / Leiste 16 A'],[2300,'Leiste mit 10 A'],[1000,'Kabeltrommel aufgerollt']];
+function steckdose(){
+  h(`<h2>Was hängt gleichzeitig an der Steckdose?</h2><p class="hint" style="margin-top:-6px;margin-bottom:12px">Tippe jedes Gerät an, das zur selben Zeit läuft. Zweimal tippen = zwei Geräte.</p>
+  <div class="grid" id="sgrid">${GERAETE.filter(g=>g[1]!=='Anderes Gerät').map((g,i)=>`<button class="card" data-s="${esc(g[1])}"><span class="e">${g[0]}</span>${g[1]}<small>${fmt(g[2])} W</small></button>`).join('')}</div>
+  <div class="actions"><button class="btn ghost" id="sreset">Alles abwählen</button></div>
+  <div id="sres"></div>
+  <details class="fine"><summary>Genauer einstellen</summary>
+   <div class="step" style="margin-top:10px">Wo hängt alles dran?</div>
+   <div class="pills" id="sgr">${GRENZEN.map(g=>`<button class="pill${g[0]===S.grenze?' on':''}" data-gr="${g[0]}">${g[1]}</button>`).join('')}</div>
+   <div class="fields"><label class="field"><span>Weitere Geräte in Watt</span><input type="number" id="sx" inputmode="numeric" min="0" step="10" value="${S.extra}"></label>
+   <label class="field"><span>Eigene Grenze laut Aufdruck (W)</span><input type="number" id="sg" inputmode="numeric" min="0" step="10" placeholder="z. B. 3500"></label></div>
+   <p class="hint">Die Watt-Werte der Geräte sind typische Werte. Genau steht es auf dem Typenschild.</p></details>`);
+  supd();
+  sx.addEventListener('input',()=>{S.extra=num(sx.value);supd()});
+  sg.addEventListener('input',()=>{if(num(sg.value)>0){S.grenze=num(sg.value);document.querySelectorAll('#sgr .pill').forEach(p=>p.classList.remove('on'));}supd()});
+  sreset.onclick=()=>{S.anz={};S.extra=0;sx.value=0;supd()};
+}
+function gauge(p){
+  const R=90,cx=110,cy=112,f=v=>Math.PI*(1-Math.min(v,1.25)/1.25);
+  const pt=(a,r)=>[cx+r*Math.cos(a),cy-r*Math.sin(a)];
+  const arc=(a,b,c)=>{const[x1,y1]=pt(f(a),R),[x2,y2]=pt(f(b),R);return `<path d="M${x1} ${y1}A${R} ${R} 0 0 1 ${x2} ${y2}" stroke="${c}" stroke-width="18" fill="none"/>`};
+  const[nx,ny]=pt(f(p),R-22);
+  return `<svg class="gauge" viewBox="0 0 220 125" role="img" aria-label="Auslastung ${fmt(p*100)} Prozent">${arc(0,.8,'var(--ok)')}${arc(.8,1,'var(--warn)')}${arc(1,1.25,'var(--bad)')}<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="8" fill="var(--ink)"/></svg>`;
+}
+function supd(){
+  document.querySelectorAll('#sgrid .card').forEach(c=>{const n=S.anz[c.dataset.s]||0;c.classList.toggle('on',n>0);const old=c.querySelector('.badge');if(old)old.remove();if(n>0)c.insertAdjacentHTML('beforeend',`<span class="badge">${n}</span>`);});
+  const list=Object.entries(S.anz).filter(([,n])=>n>0).map(([name,n])=>{const g=GERAETE.find(x=>x[1]===name);return {name,n,w:g[2]*n}});
+  const sum=list.reduce((s,x)=>s+x.w,0)+S.extra, p=sum/S.grenze, amp=sum/230;
+  if(!sum){sres.innerHTML='<p class="hint" style="margin-top:16px">Noch nichts gewählt. Tippe oben die Geräte an.</p>';return;}
+  let cls='ok',say='Passt – die Steckdose schafft das.',tips=['Achte trotzdem auf eine Mehrfachsteckdose mit Prüfzeichen und ohne Hitzeflecken.'];
+  if(p>1){cls='bad';say=`Zu viel! ${fmt(sum-S.grenze)} W über der Grenze.`;tips=['Heizlüfter, Wasserkocher, Föhn und Trockner gehören jeweils in eine eigene Wandsteckdose.','Mehrfachsteckdosen nicht hintereinander stecken – das verteilt nichts, die erste trägt alles.','Wird ein Stecker oder die Leiste warm: sofort entlasten.'];}
+  else if(p>0.8){cls='warn';say='Knapp – so nicht dauerhaft betreiben.';tips=['Für Dauerbetrieb (Heizlüfter, Klimagerät) etwas Luft zur Grenze lassen.','Kabeltrommeln immer ganz abrollen.'];}
+  const desc=list.map(x=>(x.n>1?x.n+'× ':'')+x.name).concat(S.extra?[fmt(S.extra)+' W weitere']:[]).join(' + ');
+  const copy=`Steckdosen-Check: ${desc} = ${fmt(sum)} W (${fmt(amp,1)} A bei 230 V). Grenze ${fmt(S.grenze)} W → ${fmt(p*100)} %. ${say}`;
+  sres.innerHTML=`<div class="gap"></div>${gauge(p)}<div class="sum">${fmt(sum)} W</div>`+antwortBox(cls,'Antwort',say,`${esc(desc)} – das sind ${fmt(p*100)} % von ${fmt(S.grenze)} W (${fmt(amp,1)} A).`,tips,copy,'Grenze = Ampere × 230 V: 16 A × 230 V = 3.680 W. Zählt nur, was gleichzeitig läuft.');
+  zaehle('steckdose');
+}
+app.addEventListener('click',e=>{
+  const c=e.target.closest('[data-s]'); if(c){S.anz[c.dataset.s]=(S.anz[c.dataset.s]||0)+1; if(S.anz[c.dataset.s]>3) S.anz[c.dataset.s]=0; supd(); return;}
+  const g=e.target.closest('[data-gr]'); if(g){S.grenze=num(g.dataset.gr);document.querySelectorAll('#sgr .pill').forEach(p=>p.classList.toggle('on',p===g));const sg=document.getElementById('sg');if(sg)sg.value='';supd();}
+});
+
+// ================= 3) Netzteil =================
+// Herstellerangaben (ca.): CPU = maximale Leistungsaufnahme, GPU = Board Power
+const GPUS=[['Weiß ich nicht / andere',220],['Keine Grafikkarte',0],['RTX 3060',170],['RTX 3070',220],['RTX 3080',320],['RTX 4060',115],['RTX 4060 Ti',160],['RTX 4070',200],['RTX 4070 Super',220],['RTX 4070 Ti (Super)',285],['RTX 4080 (Super)',320],['RTX 4090',450],['RTX 5060 Ti',180],['RTX 5070',250],['RTX 5070 Ti',300],['RTX 5080',360],['RTX 5090',575],['RX 6600',132],['RX 6700 XT',230],['RX 7600',165],['RX 7700 XT',245],['RX 7800 XT',263],['RX 7900 XT',315],['RX 7900 XTX',355],['RX 9070',220],['RX 9070 XT',304]];
+const CPUS=[['Weiß ich nicht / andere',125],['Intel i3 (12.–14. Gen.)',89],['Intel i5-12400F / 13400F',148],['Intel i5-13600K / 14600K',181],['Intel i7-13700K / 14700K',253],['Intel i9-13900K / 14900K',253],['Intel Core Ultra 5 245K',159],['Intel Core Ultra 7/9 265K/285K',250],['Ryzen 5 5600 / 5600X',76],['Ryzen 7 5700X / 5800X',105],['Ryzen 7 5800X3D',142],['Ryzen 5 7600 / 7600X',142],['Ryzen 7 7800X3D / 9800X3D',162],['Ryzen 7 9700X',88],['Ryzen 9 7950X / 9950X',230]];
+const N={gpu:0,cpu:0,psu:0,rest:75};
+function netzteil(){
+  h(`<h2>Reicht mein PC-Netzteil?</h2>
+  <label class="field"><span>1. Welche Grafikkarte?</span><select id="ng">${GPUS.map((g,i)=>`<option value="${i}"${i===N.gpu?' selected':''}>${g[0]}${i>1?` (${g[1]} W)`:''}</option>`).join('')}</select></label>
+  <div class="gap"></div>
+  <label class="field"><span>2. Welcher Prozessor?</span><select id="nc">${CPUS.map((c,i)=>`<option value="${i}"${i===N.cpu?' selected':''}>${c[0]}${i>0?` (${c[1]} W)`:''}</option>`).join('')}</select></label>
+  <div class="gap"></div>
+  <div class="step">3. Wie stark ist dein Netzteil?</div>
+  <div class="pills" id="np">${[[0,'Weiß ich nicht'],[450],[550],[650],[750],[850],[1000],[1200]].map(p=>`<button class="pill${p[0]===N.psu?' on':''}" data-psu="${p[0]}">${p[1]||p[0]+' W'}</button>`).join('')}</div>
+  <div id="nres"></div>
+  <details class="fine"><summary>Genauer einstellen</summary><div class="fields">
+   <label class="field"><span>Grafikkarte in Watt</span><input type="number" id="ngw" inputmode="numeric" min="0" step="5"></label>
+   <label class="field"><span>Prozessor in Watt</span><input type="number" id="ncw" inputmode="numeric" min="0" step="5"></label>
+   <label class="field"><span>Rest (Mainboard, RAM, SSD, Lüfter)</span><input type="number" id="nr" inputmode="numeric" min="0" step="5" value="${N.rest}"></label>
+   <label class="field"><span>Netzteil in Watt</span><input type="number" id="npw" inputmode="numeric" min="0" step="50" placeholder="z. B. 650"></label>
+  </div><p class="hint">Herstellerangaben, gerundet. Einzelne Modelle weichen ab.</p></details>`);
+  const setW=()=>{ngw.value=GPUS[N.gpu][1];ncw.value=CPUS[N.cpu][1];};
+  ng.onchange=()=>{N.gpu=+ng.value;setW();nupd()}; nc.onchange=()=>{N.cpu=+nc.value;setW();nupd()};
+  ['ngw','ncw','nr','npw'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{if(id==='npw'){N.psu=num(npw.value);document.querySelectorAll('#np .pill').forEach(p=>p.classList.toggle('on',num(p.dataset.psu)===N.psu));}nupd()}));
+  setW(); nupd();
+}
+const GROESSEN=[450,550,650,750,850,1000,1200,1300,1500,1600];
+function nupd(){
+  const gpu=num(ngw.value),cpu=num(ncw.value),rest=num(nr.value),psu=N.psu;
+  const last=gpu+cpu+rest, empf=last*1.3, gr=GROESSEN.find(g=>g>=empf)||Math.ceil(empf/100)*100;
+  let cls='',say=`Du brauchst ein Netzteil mit etwa ${fmt(gr)} W.`;
+  if(psu>0){ if(psu>=empf){cls='ok';say=`Ja, dein ${fmt(psu)}-W-Netzteil reicht.`;} else if(psu>=last*1.1){cls='warn';say=`Knapp – ${fmt(psu)} W reichen gerade so.`;} else {cls='bad';say=`Nein, ${fmt(psu)} W sind zu wenig.`;} }
+  const gname=GPUS[N.gpu][0], cname=CPUS[N.cpu][0];
+  const more=`Unter Volllast zieht der PC etwa <b>${fmt(last)} W</b> (Grafikkarte ${fmt(gpu)} W + Prozessor ${fmt(cpu)} W + Rest ${fmt(rest)} W). Mit 30 % Reserve für Lastspitzen: ${fmt(empf)} W → empfohlen <b>${fmt(gr)} W</b>.`;
+  const tips=['Qualität vor Wattzahl: ein gutes Markennetzteil (80 Plus Gold) ist besser als ein billiges mit mehr Watt.','Prüfe, ob das Netzteil die Stromstecker deiner Grafikkarte hat (8-Pin bzw. 12V-2x6).'];
+  const copy=`Netzteil-Check: ${gname} (${fmt(gpu)} W) + ${cname} (${fmt(cpu)} W) + Rest ${fmt(rest)} W = ca. ${fmt(last)} W unter Volllast. Mit 30 % Reserve: ${fmt(empf)} W → empfohlen ${fmt(gr)} W.${psu>0?' Vorhanden: '+fmt(psu)+' W – '+say:''}`;
+  nres.innerHTML=antwortBox(cls,'Antwort',say,more,tips,copy,'');
+  zaehle('netzteil');
+}
+app.addEventListener('click',e=>{const p=e.target.closest('[data-psu]');if(!p)return;N.psu=num(p.dataset.psu);document.querySelectorAll('#np .pill').forEach(x=>x.classList.toggle('on',x===p));const f=document.getElementById('npw');if(f)f.value=N.psu||'';nupd();});
+
+// ================= 4) Akku =================
+const A={art:null,w:25,pb:10000,ph:5000,wh:470,fahr:16};
+const AKKUARTEN=[['handy','📱','Handy'],['laptop','💻','Laptop / Tablet'],['powerbank','🔋','Powerbank'],['scooter','🛴','E-Scooter / E-Bike']];
+function akku(){
+  h(`<div class="step">Schritt 1 von 2</div><h2>Worum geht es?</h2>
+  <div class="grid">${AKKUARTEN.map(a=>`<button class="card" data-a="${a[0]}"><span class="e">${a[1]}</span>${a[2]}</button>`).join('')}</div>`);
+}
+function akku2(){
+  const a=A.art; let html='';
+  if(a==='handy'||a==='laptop'){
+    const wats=a==='handy'?[5,10,18,25,45,65]:[30,45,65,100,140];
+    if(!wats.includes(A.w)) A.w=a==='handy'?25:65;
+    html=`<div class="step">Schritt 2 von 2</div><h2>Wie stark ist dein Ladegerät?</h2><p class="hint" style="margin-top:-6px;margin-bottom:10px">Steht klein auf dem Netzteil, z. B. „25W“.</p>
+    <div class="pills" id="aw">${wats.map(w=>`<button class="pill${w===A.w?' on':''}" data-aw="${w}">${w} W</button>`).join('')}</div>
+    <div id="ares"></div>
+    <details class="fine"><summary>Genauer einstellen</summary><div class="fields">
+     <label class="field"><span>Akku in Wh (${a==='handy'?'Handy meist 15–20':'Laptop meist 40–100'})</span><input type="number" id="awh" inputmode="decimal" min="0" value="${a==='handy'?19:60}"></label>
+     <label class="field"><span>Ladegerät in Watt</span><input type="number" id="aww" inputmode="decimal" min="0" value="${A.w}"></label></div>
+     <p class="hint">mAh in Wh: mAh × Akkuspannung (Handy ca. 3,85 V) ÷ 1000.</p></details>`;
+  } else if(a==='powerbank'){
+    html=`<div class="step">Schritt 2 von 2</div><h2>Wie groß ist deine Powerbank?</h2>
+    <div class="pills" id="apb">${[5000,10000,20000,26800].map(v=>`<button class="pill${v===A.pb?' on':''}" data-apb="${v}">${fmt(v)} mAh</button>`).join('')}</div>
+    <div class="gap"></div><div class="step">Und dein Handy-Akku?</div>
+    <div class="pills" id="aph">${[3000,4000,5000,6000].map(v=>`<button class="pill${v===A.ph?' on':''}" data-aph="${v}">${fmt(v)} mAh</button>`).join('')}</div>
+    <div id="ares"></div>`;
+  } else {
+    html=`<div class="step">Schritt 2 von 2</div><h2>Wie groß ist der Akku?</h2><p class="hint" style="margin-top:-6px;margin-bottom:10px">Wh = Volt × Ah, z. B. 36 V × 13 Ah = 468 Wh.</p>
+    <div class="pills" id="awhp">${[280,365,470,550,700].map(v=>`<button class="pill${v===A.wh?' on':''}" data-awh="${v}">${v} Wh</button>`).join('')}</div>
+    <div class="gap"></div><div class="step">Wie fährst du?</div>
+    <div class="pills" id="af">${[[12,'sparsam, flach'],[16,'normal'],[22,'schwer, bergig, kalt']].map(f=>`<button class="pill${f[0]===A.fahr?' on':''}" data-af="${f[0]}">${f[1]}</button>`).join('')}</div>
+    <div id="ares"></div>`;
+  }
+  h(html); aupd();
+  ['awh','aww'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',()=>{if(id==='aww'){A.w=num(el.value);document.querySelectorAll('#aw .pill').forEach(p=>p.classList.toggle('on',num(p.dataset.aw)===A.w));}aupd()})});
+}
+function aupd(){
+  const a=A.art, out=document.getElementById('ares'); let box='';
+  if(a==='handy'||a==='laptop'){
+    const wh=num(document.getElementById('awh').value)||(a==='handy'?19:60), w=A.w;
+    const t80=wh*0.8/(w*0.85), t100=t80+wh*0.2/(w*0.85*0.45);
+    const say=`Von leer auf voll dauert es etwa ${dauer(t100)}.`;
+    const more=`Auf 80 % bist du nach rund <b>${dauer(t80)}</b>. Das letzte Stück lädt immer langsamer. Gerechnet mit ${fmt(wh)} Wh und ${fmt(w)} W.`;
+    const tips=[a==='handy'?'Ein stärkeres Ladegerät hilft nur, wenn dein Handy die Leistung auch annimmt (siehe Datenblatt).':'Laptop während des Ladens im Ruhezustand lässt ihn deutlich schneller voll werden.','Wird das Gerät beim Laden heiß, drosselt es die Leistung – dann dauert es länger.'];
+    box=antwortBox('','Antwort',say,more,tips,`Ladezeit: Akku ${fmt(wh)} Wh, Ladegerät ${fmt(w)} W → bis 80 % ca. ${dauer(t80)}, voll ca. ${dauer(t100)} (Schätzung, das letzte Stück lädt langsamer).`,'');
+  } else if(a==='powerbank'){
+    const n=A.pb*3.7*0.65/(A.ph*3.85);
+    box=antwortBox('','Antwort',`Deine Powerbank lädt dein Handy etwa ${fmt(n,1).replace(',0','')}-mal voll.`,`Von ${fmt(A.pb)} mAh kommen durch Spannungswandlung und Wärme nur rund 60–70 % im Handy an (${fmt(A.pb*3.7/1000,1)} Wh gesamt, ca. ${fmt(A.pb*3.7*0.65/1000,1)} Wh nutzbar).`,['Ins Flugzeug: Powerbanks bis 100 Wh (ca. 27.000 mAh) sind im Handgepäck meist erlaubt – Airline prüfen.'],`Powerbank ${fmt(A.pb)} mAh lädt einen ${fmt(A.ph)}-mAh-Handyakku ca. ${fmt(n,1)}× voll (mit ca. 65 % Wirkungsgrad gerechnet).`,'');
+  } else {
+    const km=A.wh/A.fahr, lade=A.wh/(84*0.85);
+    box=antwortBox('','Antwort',`Damit kommst du etwa ${fmt(km)} km weit.`,`Je nach Fahrweise zwischen <b>${fmt(A.wh/22)} und ${fmt(A.wh/12)} km</b>. Mit einem üblichen 2-A-Ladegerät dauert das Volladen rund ${dauer(lade)}.`,['Gewicht, Steigungen, Kälte, Tempo und Reifendruck verändern die Reichweite stark.'],`Reichweite: ${fmt(A.wh)}-Wh-Akku bei ${A.fahr} Wh/km ≈ ${fmt(km)} km (Spanne ${fmt(A.wh/22)}–${fmt(A.wh/12)} km). Laden mit 2-A-Ladegerät ca. ${dauer(lade)}.`,'');
+  }
+  out.innerHTML=box; zaehle('akku-'+a);
+}
+app.addEventListener('click',e=>{
+  const c=e.target.closest('[data-a]'); if(c){A.art=c.dataset.a;akku2();return;}
+  const pick=(attr,key,grp)=>{const b=e.target.closest('['+attr+']');if(!b)return false;A[key]=num(b.getAttribute(attr));b.parentElement.querySelectorAll('.pill').forEach(p=>p.classList.toggle('on',p===b));if(key==='w'){const f=document.getElementById('aww');if(f)f.value=A.w;}aupd();return true;};
+  pick('data-aw','w')||pick('data-apb','pb')||pick('data-aph','ph')||pick('data-awh','wh')||pick('data-af','fahr');
+});
+
+// ================= 5) Umrechnen =================
+const U={wert:2000,einheit:'W',volt:230};
+function umrechnen(){
+  h(`<h2>Was möchtest du umrechnen?</h2>
+  <div class="fields" style="grid-template-columns:2fr 1fr;margin-top:0">
+   <label class="field"><span>Wert</span><input type="number" id="uw" inputmode="decimal" min="0" value="${U.wert}"></label>
+   <label class="field"><span>Einheit</span><select id="ue"><option value="W"${U.einheit==='W'?' selected':''}>Watt</option><option value="A"${U.einheit==='A'?' selected':''}>Ampere</option></select></label>
+  </div>
+  <div class="gap"></div><div class="step">Bei welcher Spannung?</div>
+  <div class="pills" id="uv">${[[230,'Steckdose 230 V'],[12,'Auto 12 V'],[5,'USB 5 V'],[20,'USB-C 20 V']].map(v=>`<button class="pill${v[0]===U.volt?' on':''}" data-uv="${v[0]}">${v[1]}</button>`).join('')}</div>
+  <div id="ures"></div>`);
+  uw.addEventListener('input',()=>{U.wert=num(uw.value);uupd()}); ue.onchange=()=>{U.einheit=ue.value;uupd()}; uupd();
+}
+function uupd(){
+  const v=U.volt; let say,copy,tips=[];
+  if(U.einheit==='W'){const a=U.wert/v;say=`${fmt(U.wert)} W sind bei ${v} V etwa ${fmt(a,a<10?2:1)} A.`;copy=`${fmt(U.wert)} W ÷ ${v} V = ${fmt(a,2)} A.`;if(v===230&&a>16)tips.push('Mehr als 16 A – das schafft eine normale Haushaltssteckdose nicht.');}
+  else {const w=U.wert*v;say=`${fmt(U.wert,1)} A sind bei ${v} V etwa ${fmt(w)} W.`;copy=`${fmt(U.wert,1)} A × ${v} V = ${fmt(w)} W.`;if(v===230&&U.wert>16)tips.push('Mehr als 16 A – das schafft eine normale Haushaltssteckdose nicht.');}
+  document.getElementById('ures').innerHTML=antwortBox(tips.length?'bad':'','Antwort',say,'',tips,copy,'Formel: Watt = Volt × Ampere');
+  zaehle('umrechnen');
+}
+app.addEventListener('click',e=>{const b=e.target.closest('[data-uv]');if(!b)return;U.volt=num(b.dataset.uv);document.querySelectorAll('#uv .pill').forEach(p=>p.classList.toggle('on',p===b));uupd();});
+
+// ================= Navigation =================
+const SEITEN={kosten,steckdose,netzteil,akku,umrechnen};
+function route(){
+  const t=location.hash.slice(1);
+  document.getElementById('back').classList.toggle('hide',!SEITEN[t]);
+  (SEITEN[t]||start)();
+}
+document.getElementById('home').onclick=()=>{location.hash='';};
+document.getElementById('back').onclick=()=>{location.hash='';};
+window.addEventListener('hashchange',route);
+route();
+</script>
+</body>
+</html>
